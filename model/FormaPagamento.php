@@ -1,5 +1,6 @@
 <?php
-class Categoria extends Entidade
+
+class FormaPagamento extends Entidade
 {
     private string $nome;
     private ?string $descricao;
