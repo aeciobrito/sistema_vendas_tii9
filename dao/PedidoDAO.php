@@ -8,7 +8,7 @@ require_once __DIR__ . '/../database/Database.php';
 
 class PedidoDAO
 {
-    private PDO $db;
+    protected PDO $db;
 
     public function __construct()
     {
@@ -17,18 +17,19 @@ class PedidoDAO
 
     private function mapObject(array $row): Pedido
     {
-        $usuarioDAO = new UsuarioDAO();
-        $formaPgamentoDAO = new FormaPagamentoDAO();
-        $itemPedido = new ItemPedidoDAO();
+        $usuarioDao = new UsuarioDAO();
+        $formaPagamentoDao = new FormaPagamentoDAO();
+        $itemPedidoDao = new ItemPedidoDAO();
 
-        $cliente = $usuarioDAO->getById($row['cliente_id']);
-        $formaPagamento = $formaPgamentoDAO->getById($row['forma_pagamento_id']);
-
+        $cliente = $usuarioDao->getById($row['cliente_id']);
+        $formaPagamento = $formaPagamentoDao->getById($row['forma_pagamento_id']);
+        
         $usuarioAtualizacao = null;
-        if(!empty($row['usuario_atualizacao'])) {
-            $usuarioAtualizacao = $usuarioDAO->getById($row['usuario_atualizacao']);
+        if (!empty($row['usuario_atualizacao'])) {
+            $usuarioAtualizacao = $usuarioDao->getById($row['usuario_atualizacao']);
         }
-
+        
+        // Cria o objeto Pedido primeiro, sem os itens
         $pedido = new Pedido(
             $row['id'],
             $cliente,
@@ -36,28 +37,30 @@ class PedidoDAO
             $formaPagamento,
             $row['status'],
             (bool)$row['ativo'],
-            [],
+            [], // Itens serão buscados depois
             $row['data_criacao'],
             $row['data_atualizacao'],
             $usuarioAtualizacao
         );
 
-        $itens = $itemPedido->getByPedidoId($pedido->getId());
+        // Agora busca e anexa os itens ao pedido
+        $itens = $itemPedidoDao->getByPedidoId($pedido->getId());
         $pedido->setItens($itens);
 
         return $pedido;
     }
-    
+
+    // Criar um pedido é uma operação complexa que envolve múltiplas tabelas.
+    // É essencial usar uma transação para garantir a consistência dos dados.
     public function create(Pedido $pedido): int|false
     {
         $this->db->beginTransaction();
 
         try {
-            $sql = "INSERT INTO pedido (cliente_id, data_pedido, forma_pagamento_id, status, usuario_atualizacao) 
-                            VALUES (:cliente_id, :data_pedido, :forma_pagamento_id, :status, :user_id)";
+            $sqlPedido = "INSERT INTO pedido (cliente_id, data_pedido, forma_pagamento_id, status, usuario_atualizacao) 
+                          VALUES (:cliente_id, :data_pedido, :forma_pagamento_id, :status, :user_id)";
             
-            $stmtPedido = $this->db->prepare($sql);
-
+            $stmtPedido = $this->db->prepare($sqlPedido);
             $stmtPedido->execute([
                 ':cliente_id' => $pedido->getCliente()->getId(),
                 ':data_pedido' => $pedido->getDataPedido(),
@@ -69,8 +72,9 @@ class PedidoDAO
             $pedidoId = $this->db->lastInsertId();
             $itemPedidoDao = new ItemPedidoDAO();
 
-            foreach($pedido->getItens() as $item) {
-                if(!$itemPedidoDao->create($item, $pedidoId)) {
+            foreach ($pedido->getItens() as $item) {
+                if (!$itemPedidoDao->create($item, $pedidoId)) {
+                    // Se um item falhar, desfaz tudo
                     $this->db->rollBack();
                     return false;
                 }
@@ -78,8 +82,10 @@ class PedidoDAO
 
             $this->db->commit();
             return (int)$pedidoId;
+
         } catch (Exception $e) {
             $this->db->rollBack();
+            // Logar o erro $e->getMessage() é uma boa prática
             return false;
         }
     }
