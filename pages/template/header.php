@@ -18,7 +18,7 @@ require_once __DIR__ . '/../../services/authService.php';
             <img src="./public/img/logo.jpg" alt="Logo da Empresa">
         </a>
         <nav class="nav-menu">
-            <a href="/index.php">Home</a>            
+            <a href="./index.php">Home</a>            
             <?php if (isAdmin()): ?>
                 <a href="/pages/categorias/index.php">Gerenciar Categorias</a>
                 <a href="/pages/produtos/index.php">Gerenciar Produtos</a>
