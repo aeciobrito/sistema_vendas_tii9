@@ -41,7 +41,7 @@ $pedido_id = $_GET['pedido_id'] ?? 'Não identificado';
     </div>
     
     <br>
-    <a href="/index.php" class="btn btn-primary">Voltar à Loja Agora</a>
+    <a href="/sistema_vendas/index.php" class="btn btn-primary">Voltar à Loja Agora</a>
 </div>
 
 <script>
@@ -69,7 +69,7 @@ $pedido_id = $_GET['pedido_id'] ?? 'Não identificado';
             }
             if (seconds <= 0) {
                 clearInterval(countdownInterval); // Para o contador
-                window.location.href = '/index.php'; // Redireciona
+                window.location.href = '/sistema_vendas/index.php'; // Redireciona
             }
         }, 1000); // Executa a cada 1 segundo (1000 ms)
     });
