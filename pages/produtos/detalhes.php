@@ -61,7 +61,7 @@ if ($produto && $produto->isAtivo()):
 <?php else: ?>
     <h1>Produto não encontrado</h1>
     <p>O produto que você está procurando não existe ou não está mais disponível.</p>
-    <a href="/sistema_vendas/index.php" class="btn btn-primary">Voltar ao Catálogo</a>
+    <a href="/index.php" class="btn btn-primary">Voltar ao Catálogo</a>
 <?php
 endif;
 

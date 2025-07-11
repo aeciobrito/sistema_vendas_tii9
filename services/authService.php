@@ -34,7 +34,7 @@ function getLoggedUser(): ?Usuario {
     return $usuario;
 }
 
-function requireLogin(string $redirectUrl = '/sistema_vendas/pages/usuarios/login.php') {
+function requireLogin(string $redirectUrl = '/pages/usuarios/login.php') {
     if (!isLoggedIn()) {
         $_SESSION['redirect_url'] = $_SERVER['REQUEST_URI'];
         header("Location: " . $redirectUrl);
@@ -57,7 +57,7 @@ function requireAdmin() {
             'type' => 'error',
             'message' => 'Acesso negado. Você não tem permissão para acessar esta página.'
         ];
-        header('Location: /sistema_vendas/index.php');
+        header('Location: /index.php');
         exit();
     }
 }

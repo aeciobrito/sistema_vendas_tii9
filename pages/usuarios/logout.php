@@ -1,5 +1,5 @@
 <?php
 session_start();
 session_destroy();
-header('Location: /sistema_vendas/index.php');
+header('Location: /index.php');
 exit();
