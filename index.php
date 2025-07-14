@@ -38,7 +38,7 @@ if (isset($_SESSION['flash_message'])) {
                 <h2 class="card-title"><?= htmlspecialchars($produto->getNome()) ?></h2>
                 <p class="card-price">R$ <?= number_format($produto->getPreco(), 2, ',', '.') ?></p>
                 <div class="card-actions">
-                    <a href="/sistema_vendas/pages/produtos/detalhes.php?id=<?= $produto->getId() ?>" class="btn btn-secondary">Detalhes</a>
+                    <a href="./pages/produtos/detalhes.php?id=<?= $produto->getId() ?>" class="btn btn-secondary">Detalhes</a>
                     <button class="btn btn-primary" onclick="adicionarAoCarrinho(
                         <?= $produto->getId() ?>,
                         '<?= htmlspecialchars(addslashes($produto->getNome())) ?>',
@@ -58,5 +58,5 @@ if (isset($_SESSION['flash_message'])) {
 </div>
 
 <?php
-require_once __DIR__ . '/pages/template/footer.php';
+require_once __DIR__ . './pages/template/footer.php';
 ?>

@@ -41,7 +41,7 @@ $pedido_id = $_GET['pedido_id'] ?? 'Não identificado';
     </div>
     
     <br>
-    <a href="/sistema_vendas/index.php" class="btn btn-primary">Voltar à Loja Agora</a>
+    <a href="/index.php" class="btn btn-primary">Voltar à Loja Agora</a>
 </div>
 
 <script>
